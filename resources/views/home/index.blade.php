@@ -265,13 +265,13 @@
     <a href="{{ route('update_food',$food->id) }}" class="btn btn-success"> Update</a>
 </div>
 @else
-        <form action="{{ route('add_cart',$food->id) }}" class="mb-2" method="POST" >
-            @csrf
-            <div class="d-flex justify-content-center">
-                                <input type="number" min="1"  name="qty" class="form-control w-50 ">
-                                <input type="submit" value="Add To Cart" class="btn btn-danger ">
-            </div>
-        </form>
+<form id="cartForm" action="{{ route('add_cart', $food->id) }}" class="mb-2" method="POST">
+    @csrf
+    <div class="d-flex justify-content-center">
+        <input type="number" min="1" name="qty" class="form-control w-50" required>
+        <button type="button" id="addcart" class="btn btn-danger">Add To Cart</button>
+    </div>
+</form>
         @endif
                            
                         </div>
@@ -360,6 +360,63 @@
 	<!-- core  -->
     <script src="assets/vendors/jquery/jquery-3.4.1.js"></script>
     <script src="assets/vendors/bootstrap/bootstrap.bundle.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#addcart').on('click', function() {
+            const qty = $('input[name="qty"]').val();
+            const url = $('#cartForm').attr('action'); 
+            const token = $('input[name="_token"]').val(); 
+
+            if (!qty || qty <= 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops',
+                    text: 'Please enter a valid quantity!',
+                });
+                return;
+            }
+
+            Swal.fire({
+                title: 'Add to Cart',
+                text: 'Do you really want to add the product?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, add it!',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    
+                    $.ajax({
+                        url: url,
+                        method: 'POST',
+                        data: {
+                            _token: token, 
+                            qty: qty 
+                        },
+                        success: function(response) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: 'Product added to cart successfully!',
+                            });
+                        },
+                        error: function(xhr) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Failed to add the product. Please try again.',
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>
 
     <!-- bootstrap affix -->
     <script src="assets/vendors/bootstrap/bootstrap.affix.js"></script>
