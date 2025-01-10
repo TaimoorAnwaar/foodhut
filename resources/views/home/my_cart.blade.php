@@ -18,6 +18,9 @@
 
     <!-- Bootstrap + FoodHut main styles -->
 	<link rel="stylesheet" href="assets/css/foodhut.css">
+    <link href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
 
    
 
@@ -76,7 +79,7 @@
     <br>
     <br>
     <div id="gallery" class="text-center has-height-md middle-items wow fadeIn">
-        <table class="table table-hover text-light">
+        <table class="table table-hover text-light" id="cart-table">
             <tr>
                 <th>Food Title</th>
                 <th>Price</th>
@@ -84,11 +87,10 @@
                 <th>Image</th>
                 <th>Remove</th>
             </tr>
-
+    
             <?php $total_price = 0; ?>
-
             @foreach ($cart as $cart)
-            <tr>
+            <tr data-cart-id="{{ $cart->id }}">
                 <td>{{ $cart->title }}</td>
                 <td>{{ $cart->price }}</td>
                 <td>{{ $cart->quantity }}</td>
@@ -96,20 +98,19 @@
                     <img height="50px" src="food_image/{{ $cart->image }}" alt="">
                 </td>
                 <td>
-                    <a href="{{ route('remove_cart', $cart->id) }}" class="btn btn-danger">Remove</a>
+                    <a href="{{ route('remove_cart', $cart->id) }}" class="btn btn-danger remove-cart">Remove</a>
                 </td>
             </tr>
             <?php $total_price += $cart->price; ?>
             @endforeach
         </table>
-
-        <h1 class="mt-5">Your total price is RS {{ $total_price }}</h1>
-        
+    
+        <h1 id="total-price" class="mt-5">Your total price is RS {{ $total_price }}</h1>
+    
         <div class="d-flex justify-content-center my-3">
             <button class="btn btn-primary col-3" data-bs-toggle="modal" data-bs-target="#checkoutModal">Checkout</button>
         </div>
-            
-</div>
+    </div>
 
     <!-- Modal -->
     <div class="modal fade mt-5 py-5" id="checkoutModal" tabindex="-1" aria-labelledby="checkoutModalLabel" aria-hidden="true">
@@ -149,6 +150,7 @@
     <!-- Bootstrap JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
     
   
   
@@ -162,6 +164,55 @@
 
     <script src="assets/vendors/jquery/jquery-3.4.1.js"></script>
     <script src="assets/vendors/bootstrap/bootstrap.bundle.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Add Toastify Library for Toast Messages -->
+<link href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#gallery').on('click', '.remove-cart', function(e) {
+            e.preventDefault(); 
+
+            const removeUrl = $(this).attr('href'); 
+            const row = $(this).closest('tr'); 
+
+            $.ajax({
+                url: removeUrl,
+                method: 'GET',
+                success: function(response) {
+                    
+                    Toastify({
+                        text: "Your cart product has been deleted.",
+                        duration: 3000, 
+                        close: true,
+                        gravity: "bottom", 
+                        position: "right", 
+                        backgroundColor: "#28a745", 
+                    }).showToast();
+
+                    row.remove();
+
+                    $('#total-price').text('Your total price is RS ' + response.updatedTotalPrice);
+                },
+                error: function(xhr) {
+                    Toastify({
+                        text: "Failed to remove the product. Please try again.",
+                        duration: 3000,
+                        close: true,
+                        gravity: "top",
+                        position: "right",
+                        backgroundColor: "#d33", 
+                    }).showToast();
+                }
+            });
+        });
+    });
+</script>
+
+
     
 
     <!-- bootstrap affix -->

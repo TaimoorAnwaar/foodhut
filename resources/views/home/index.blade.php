@@ -268,8 +268,8 @@
 <form id="cartForm" action="{{ route('add_cart', $food->id) }}" class="mb-2" method="POST">
     @csrf
     <div class="d-flex justify-content-center">
-        <input type="number" min="1" name="qty" class="form-control w-50" required>
-        <button type="button" id="addcart" class="btn btn-danger">Add To Cart</button>
+        <input id="input" type="number" min="1" name="qty" class="form-control w-50" required>
+        <button type="button"  class="btn btn-danger addcart">Add To Cart</button>
     </div>
 </form>
         @endif
@@ -365,7 +365,7 @@
 
 <script>
     $(document).ready(function() {
-        $('#addcart').on('click', function() {
+        $('.addcart').on('click', function() {
             const qty = $('input[name="qty"]').val();
             const url = $('#cartForm').attr('action'); 
             const token = $('input[name="_token"]').val(); 
@@ -403,6 +403,8 @@
                                 title: 'Success',
                                 text: 'Product added to cart successfully!',
                             });
+                            $('input[name="qty"]').val(0);
+
                         },
                         error: function(xhr) {
                             Swal.fire({
