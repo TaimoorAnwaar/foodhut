@@ -269,7 +269,7 @@
     @csrf
     <div class="d-flex justify-content-center">
         <input id="input" type="number" min="1" name="qty" class="form-control w-50" required>
-        <button type="button"     class="btn btn-danger addcart">Add To Cart</button>
+        <button type="button" class="btn btn-danger addcart">Add To Cart</button>
     </div>
 </form>
         @endif
