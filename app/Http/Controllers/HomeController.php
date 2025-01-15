@@ -95,7 +95,7 @@ $total_cancelled=Order::where('delivery_status','=','Cancelled')->count();
     {
         if (Auth::id()) {
             $food = Food::findOrFail($id);
-    
+     
            
             $existingCartItem = Cart::where('userid', '=',Auth::user()->id)
                                     ->where('title', '=',$food->title)
@@ -175,7 +175,7 @@ return redirect()->back();
         $book->date=$request->date;
         $book->save();
 
-        return redirect()->back();
+        return redirect()->back(); 
     }
     
      

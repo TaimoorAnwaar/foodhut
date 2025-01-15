@@ -78,7 +78,7 @@
 </table>
 
           </div>
-          <div class="d-flex justify-content-center  " style="margin-right: 300px">
+          <div class="d-flex justify-content-center" style="margin-right: 300px">
             {{ $orders->links('pagination::bootstrap-5') }}
         </div>
       </div>
